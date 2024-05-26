@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Map from './Map';
+import "./App.css";
 import useDistanceMatrix from './useDistanceMatrix';
 import nearestNeighborTsp from './NearestNeighbor';
 
@@ -10,7 +11,9 @@ const App = () => {
 
   return (
     <div>
-      <h1>Traveling Salesman Problem with Google Maps</h1>
+      <header>
+        <h1>Traveling Salesman Problem with Google Maps</h1>
+      </header>
       <Map
         origin={origin}
         destinations={destinations}
