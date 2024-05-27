@@ -24,7 +24,7 @@ const nearestNeighborTsp = (distanceMatrix) => {
       visited[nextCity] = true;
     }
   
-    path.push(0);  // Return to the starting point
+    path.push(0);  
     return path;
   };
   
