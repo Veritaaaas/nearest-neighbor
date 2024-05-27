@@ -1,7 +1,8 @@
-// src/NearestNeighbor.js
+
 const nearestNeighborTsp = (distanceMatrix) => {
     if (distanceMatrix.length === 0) return [];
   
+    console.log('Distance Matrix:', distanceMatrix);
     const n = distanceMatrix.length;
     const visited = new Array(n).fill(false);
     const path = [0];
