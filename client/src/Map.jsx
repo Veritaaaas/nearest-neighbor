@@ -19,13 +19,6 @@ function Map({origin, destinations, setOrigin, setDestinations}) {
 
   return (
     <LoadScript googleMapsApiKey="AIzaSyDe_-D5V_ilS9ejhdFVuM6WQPdCmQexZzw">
-      <div className='map-details'>
-        <div className='details'>
-            <h2>Click on the map to add destinations</h2>
-            <p>Origin: {origin ? `${origin.lat}, ${origin.lng}` : 'None'}</p>
-            <p>Destinations: {destinations.length}</p>
-            <button>Calculate Route</button>
-        </div>
           <GoogleMap
             id="direction-example"
             mapContainerStyle={{
@@ -48,7 +41,6 @@ function Map({origin, destinations, setOrigin, setDestinations}) {
               />
             ))}
           </GoogleMap>
-      </div>
     </LoadScript>
   );
 }
