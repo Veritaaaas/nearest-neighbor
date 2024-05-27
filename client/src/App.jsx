@@ -5,27 +5,29 @@ import "./App.css";
 
 
 const App = () => {
-  const [destinations, setDestinations] = useState([]);
-  const [origin, setOrigin] = useState(null);
+  const [locations, setLocations] = useState([]);
   const [distanceMatrix, setDistanceMatrix] = useState(null);
+  const [path, setPath] = useState([]);
 
   useEffect(() => {
-    if (origin && destinations.length > 0) {
-      const locations = [origin, ...destinations];
+    if (locations.length > 1) {
       fetch(`http://localhost:5000/route?locations=${locations.map(location => `${location.lat},${location.lng}`).join('|')}`)
         .then(response => response.json())
         .then(data => setDistanceMatrix(data))
         .catch(error => console.error('Error:', error));
     }
 
-  }, [origin, destinations]);
+  }, [locations]);
 
   useEffect(() => {
-    console.log('Distance Matrix:', distanceMatrix);
-  } , [distanceMatrix]);
+    if (distanceMatrix) {
+      console.log('Distance Matrix:', distanceMatrix);
+    }
+  }, [distanceMatrix]);
 
   const calculateRoute = () => {
     const path = nearestNeighborTsp(distanceMatrix);
+    setPath(path);
     console.log('Path:', path);
   }
 
@@ -38,16 +40,15 @@ const App = () => {
         <div className='map-details'>
           <div className='details'>
               <h2>Click on the map to add destinations</h2>
-              <p>Origin: {origin ? `${origin.lat}, ${origin.lng}` : 'None'}</p>
-              <p>Destinations: {destinations.length}</p>
+              <p>Origin: {locations[0] ? `${locations[0].lat}, ${locations[0].lng}` : 'None'}</p>
+              <p>Destinations: {locations.length > 1 ? locations.length - 1 : 0}</p>
               <button onClick={calculateRoute}>Calculate Route</button>
           </div>
         </div>
         <Map
-          origin={origin}
-          destinations={destinations}
-          setOrigin={setOrigin}
-          setDestinations={setDestinations}
+          locations={locations}
+          setLocations={setLocations}
+          path={path}
         />
       </div>
     </div>
