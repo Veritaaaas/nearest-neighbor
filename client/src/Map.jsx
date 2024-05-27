@@ -1,46 +1,59 @@
-import React, { useState, useCallback } from 'react';
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import React, { useState, useCallback, useEffect } from 'react';
+import { GoogleMap, LoadScript, Marker, Polyline } from '@react-google-maps/api';
 
-function Map({origin, destinations, setOrigin, setDestinations}) {
+function Map({locations, setLocations, path}) {
   const [center, setCenter] = useState({ lat: 14.599512, lng: 120.984222 });
+
+  useEffect(() => {
+    if (locations.length > 0) {
+      setCenter(locations[0]);
+    }
+  }, [locations]);
 
   const handleMapClick = useCallback((event) => {
     const newLocation = { lat: event.latLng.lat(), lng: event.latLng.lng() };
-    if (!origin) {
-      setOrigin(newLocation);
-      setCenter(newLocation);
-    } else {
-      setDestinations((current) => [
-        ...current,
-        newLocation,
-      ]);
-    }
-  }, [origin]);
+    setLocations((current) => [
+      ...current,
+      newLocation,
+    ]);
+  }, []);
+
+  const pathCoordinates = path.map(index => locations[index]);
 
   return (
     <LoadScript googleMapsApiKey="AIzaSyDe_-D5V_ilS9ejhdFVuM6WQPdCmQexZzw">
-          <GoogleMap
-            id="direction-example"
-            mapContainerStyle={{
-              height: "100vh",
-              width: "100%"
+      <GoogleMap
+        id="direction-example"
+        mapContainerStyle={{
+          height: "100vh",
+          width: "100%"
+        }}
+        zoom={10}
+        center={center}
+        onClick={handleMapClick}
+      >
+        {locations.map((location, index) => (
+           <Marker 
+           key={index} 
+           position={location} 
+           icon={index === 0 ? { url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png' } : undefined}
+           onClick={() => {
+             const newLocations = locations.filter((_, idx) => idx !== index);
+             setLocations(newLocations);
+           }}
+         />
+        ))}
+        {path.length > 1 && (
+          <Polyline
+            path={pathCoordinates}
+            options={{
+              strokeColor: '#000',
+              strokeOpacity: 0.75,
+              strokeWeight: 2,
             }}
-            zoom={10}
-            center={center}
-            onClick={handleMapClick}
-          >
-            {origin && <Marker position={origin} icon={{ url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png' }} />}
-            {destinations.map((destination, index) => (
-              <Marker 
-                key={index} 
-                position={destination} 
-                onClick={() => {
-                  const newDestinations = destinations.filter((dest, idx) => idx !== index);
-                  setDestinations(newDestinations);
-                }}
-              />
-            ))}
-          </GoogleMap>
+          />
+        )}
+      </GoogleMap>
     </LoadScript>
   );
 }
