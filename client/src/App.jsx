@@ -42,6 +42,7 @@ const App = () => {
               <h2>Click on the map to add destinations</h2>
               <p>Origin: {locations[0] ? `${locations[0].lat}, ${locations[0].lng}` : 'None'}</p>
               <p>Destinations: {locations.length > 1 ? locations.length - 1 : 0}</p>
+              <p>Path: {path} </p>
               <button onClick={calculateRoute}>Calculate Route</button>
           </div>
         </div>
