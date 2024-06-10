@@ -4,12 +4,14 @@ import { GoogleMap, LoadScript, Marker, Polyline } from '@react-google-maps/api'
 function Map({locations, setLocations, path}) {
   const [center, setCenter] = useState({ lat: 14.599512, lng: 120.984222 });
 
+  // Set the center of the map to the first location
   useEffect(() => {
     if (locations.length > 0) {
       setCenter(locations[0]);
     }
   }, [locations]);
 
+  // Add a new location to the list of locations
   const handleMapClick = useCallback((event) => {
     const newLocation = { lat: event.latLng.lat(), lng: event.latLng.lng() };
     setLocations((current) => [
@@ -18,6 +20,7 @@ function Map({locations, setLocations, path}) {
     ]);
   }, []);
 
+  // Convert the path indices to coordinates
   const pathCoordinates = path.map(index => locations[index]);
 
   return (
@@ -26,7 +29,7 @@ function Map({locations, setLocations, path}) {
         id="direction-example"
         mapContainerStyle={{
           height: "100vh",
-          width: "100%"
+          width: "20%"
         }}
         zoom={10}
         center={center}

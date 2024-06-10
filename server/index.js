@@ -1,11 +1,13 @@
+
 const express = require('express');
 const googleMapsClient = require('@google/maps').createClient({
   key: 'AIzaSyDe_-D5V_ilS9ejhdFVuM6WQPdCmQexZzw'
 });
+
 const cors = require('cors');
 const app = express();
 
-app.use(cors()); // Use cors middleware before your routes
+app.use(cors()); 
 
 app.get('/route', (req, res) => {
     const locations = req.query.locations.split('|');
