@@ -22,6 +22,7 @@ async function convertToLatLng(location) {
 
 function Map({locations, setLocations, path, addresses, setAddresses}) {
   const [center, setCenter] = useState({ lat: 14.599512, lng: 120.984222 });
+  const [pathCoordinates, setPathCoordinates] = useState([]);
 
   // Set the center of the map to the first location
   useEffect(() => {
@@ -29,6 +30,10 @@ function Map({locations, setLocations, path, addresses, setAddresses}) {
       setCenter(locations[0]);
     }
   }, [locations]);
+
+  useEffect(() => {
+    setPathCoordinates(path.map(index => locations[index]));
+  }, [path]);
 
   // Add a new location to the list of locations
   const handleMapClick = useCallback(async (event) => {
@@ -46,8 +51,19 @@ function Map({locations, setLocations, path, addresses, setAddresses}) {
     ]);
   }, []);
 
-  // Convert the path indices to coordinates
-  const pathCoordinates = path.map(index => locations[index]);
+  const handleMarkerClick = useCallback((index) => {
+    const newLocations = locations.filter((_, idx) => idx !== index);
+    const newAddresses = addresses.filter((_, idx) => idx !== index);
+    
+    // Update the path
+    const newPath = path
+      .filter(idx => idx !== index) // Remove the index of the removed location
+      .map(idx => idx > index ? idx - 1 : idx); // Decrease by 1 the indices greater than the removed index
+
+    setLocations(newLocations);
+    setAddresses(newAddresses);
+    setPath(newPath);
+  }); 
 
   return (
     <LoadScript googleMapsApiKey="AIzaSyDe_-D5V_ilS9ejhdFVuM6WQPdCmQexZzw">
@@ -66,13 +82,7 @@ function Map({locations, setLocations, path, addresses, setAddresses}) {
            key={index} 
            position={location} 
            icon={index === 0 ? { url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png' } : undefined}
-           onClick={() => {
-            const newLocations = locations.filter((_, idx) => idx !== index);
-            const newAddresses = addresses.filter((_, idx) => idx !== index);
-            
-            setLocations(newLocations);
-            setAddresses(newAddresses);
-          }}
+           onClick={() => handleMarkerClick(index)}   
          />
         ))}
         {path.length > 1 && (
