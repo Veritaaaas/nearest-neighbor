@@ -43,6 +43,14 @@ const App = () => {
     return score_matrix;
   }
 
+  function reset() {
+    setLocations([]);
+    setAddresses([]);
+    setPath([]);
+    setBaggageWeights([1]);
+  }
+
+
   useEffect(() => {
     const allWeightsFilled = baggageWeights.length === locations.length && baggageWeights.every(weight => weight !== undefined && weight !== '' && weight >= 0);
     setIsCalculateButtonDisabled(!allWeightsFilled);
@@ -100,11 +108,6 @@ const App = () => {
                 ))}
               </div>
             </div>
-            <div className='mt-4 flex justify-center'>
-              <button onClick={calculateRoute} className='bg-[#3FB760] text-white p-2 rounded-xl text-[20px] font-bold' disabled={isCalculateButtonDisabled}>
-                Calculate Route
-              </button>
-            </div>
             <div className='mt-4'>
               <div className='text-[20px] font-bold'>Route:</div>
               <div className='flex gap-4'>
@@ -114,6 +117,14 @@ const App = () => {
                   </div>
                 ))}
               </div>
+            </div>
+            <div className='mt-4 flex justify-center'>
+              <button onClick={calculateRoute} className='bg-[#3FB760] text-white p-2 rounded-xl text-[20px] font-bold' disabled={isCalculateButtonDisabled}>
+                Calculate Route
+              </button>
+              <button className='bg-[#3FB760] text-white p-2 rounded-xl text-[20px] font-bold ml-4' onClick={reset}>
+                Reset
+              </button>
             </div>
           </div>
         </div>
