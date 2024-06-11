@@ -10,21 +10,19 @@ const App = () => {
   const [addresses, setAddresses] = useState([]);
   const [path, setPath] = useState([]);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [baggageWeights, setBaggageWeights] = useState([]);
+  const [baggageWeights, setBaggageWeights] = useState([1]);
   const [isCalculateButtonDisabled, setIsCalculateButtonDisabled] = useState(true);
 
   // Calculate route using nearest neighbor algorithm
   const calculateRoute = async () => {
-    console.log('Calculating route...');
     try {
       const response = await fetch(`http://localhost:5000/route?locations=${locations.map(location => `${location.lat},${location.lng}`).join('|')}`);    
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      console.log(data);
-      const path = nearestNeighborTsp(data); 
-      console.log(path);
+      const score_matrix = calculateScore(data, baggageWeights);
+      const path = nearestNeighborTsp(score_matrix); 
       setPath(path);
     } 
     catch (error) {
@@ -32,10 +30,25 @@ const App = () => {
     }
   };
 
+  function calculateScore(matrix, weights) {
+
+    let score_matrix = Array(matrix.length).fill().map(() => Array(matrix[0].length).fill(0));
+  
+    for (let i = 0; i < matrix.length; i++) {
+      for (let j = 0; j < matrix[i].length; j++) {
+        score_matrix[i][j] = (0.2 * matrix[i][j]) + (0.7 * (1/weights[j] * 10));
+      }
+    }
+  
+    return score_matrix;
+  }
+
   useEffect(() => {
-    const allWeightsFilled = baggageWeights.length === locations.length - 1 && baggageWeights.every(weight => weight !== undefined && weight !== '');
+    const allWeightsFilled = baggageWeights.length === locations.length && baggageWeights.every(weight => weight !== undefined && weight !== '' && weight >= 0);
     setIsCalculateButtonDisabled(!allWeightsFilled);
+    console.log('Baggage weights:', baggageWeights);
   }, [baggageWeights, locations]);
+
 
   return (
     <div>
@@ -80,7 +93,7 @@ const App = () => {
                       className='border-2 rounded-xl border-[#1C2120] p-2' 
                       onChange={(e) => {
                         const newBaggageWeights = [...baggageWeights];
-                        newBaggageWeights[index] = e.target.value;
+                        newBaggageWeights[index + 1] = e.target.value;
                         setBaggageWeights(newBaggageWeights);
                       }}></input>
                   </div>
