@@ -1,40 +1,7 @@
-const swap = (path, i, j) => {
-  const newPath = [...path];
-  while (i < j) {
-    [newPath[i], newPath[j]] = [newPath[j], newPath[i]];
-    i++;
-    j--;
-  }
-  return newPath;
-};
-
-const totalDistance = (path, distanceMatrix) => {
-  let total = 0;
-  for (let i = 0; i < path.length - 1; i++) {
-    total += distanceMatrix[path[i]][path[i + 1]];
-  }
-  return total;
-};
-
-const twoOpt = (path, distanceMatrix) => {
-  let improvement = true;
-  while (improvement) {
-    improvement = false;
-    for (let i = 0; i < path.length - 1; i++) {
-      for (let j = i + 1; j < path.length; j++) {
-        const newPath = swap(path, i, j);
-        if (totalDistance(newPath, distanceMatrix) < totalDistance(path, distanceMatrix)) {
-          path = newPath;
-          improvement = true;
-        }
-      }
-    }
-  }
-  return path;
-};
-
 const nearestNeighborTsp = (distanceMatrix) => {
   if (distanceMatrix.length === 0) return [];
+
+  console.log(distanceMatrix);
 
   const n = distanceMatrix.length;
   const visited = new Array(n).fill(false);
@@ -60,7 +27,7 @@ const nearestNeighborTsp = (distanceMatrix) => {
 
   path.push(0);
 
-  return twoOpt(path, distanceMatrix);
+  return path;
 };
 
 export default nearestNeighborTsp;
