@@ -1,6 +1,6 @@
 const express = require('express');
 const googleMapsClient = require('@google/maps').createClient({
-  key: 'AIzaSyDe_-D5V_ilS9ejhdFVuM6WQPdCmQexZzw'
+  key: ''
 });
 const cors = require('cors');
 const app = express();
