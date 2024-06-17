@@ -1,32 +1,26 @@
-// src/useDistanceMatrix.js
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+let matrix = [
+  [0, 100, 150, 300],
+  [100, 0, 200, 250],
+  [150, 200, 0, 400],
+  [300, 250, 400, 0]
+]
 
-const useDistanceMatrix = (locations) => {
-  const [distanceMatrix, setDistanceMatrix] = useState([]);
+let weights = [1, 50, 75, 100]
 
-  useEffect(() => {
-    if (locations.length < 2) return;
 
-    const fetchDistances = async () => {
-      const originDest = locations[0].lat + ',' + locations[0].lng;
-      const destinations = locations.slice(1).map(location => location.lat + ',' + location.lng).join('|');
-      const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-      const url = `${proxyUrl}https://maps.googleapis.com/maps/api/distancematrix/json?origins=${originDest}&destinations=${destinations}&key=AIzaSyDe_-D5V_ilS9ejhdFVuM6WQPdCmQexZzw`;
 
-      try {
-        const response = await axios.get(url);
-        const matrix = response.data.rows.map(row => row.elements.map(element => element.distance.value));
-        setDistanceMatrix(matrix);
-      } catch (error) {
-        console.error("Error fetching distance matrix: ", error);
-      }
-    };
+function calculateScore(matrix, weights) {
 
-    fetchDistances();
-  }, [locations]);
+  let score_matrix = Array(matrix.length).fill().map(() => Array(matrix[0].length).fill(0));
 
-  return distanceMatrix;
-};
+  for (let i = 0; i < matrix.length; i++) {
+    for (let j = 0; j < matrix[i].length; j++) {
+      score_matrix[i][j] = 1 - ((0.7 * 1/matrix[i][j]) + 0.3 * weights[j]);
+    }
+  }
 
-export default useDistanceMatrix;
+  return score_matrix;
+}
+
+let score_matrix = calculateScore(matrix, weights);
+console.log(score_matrix)
