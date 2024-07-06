@@ -66,7 +66,7 @@ function Map({locations, setLocations, path, addresses, setAddresses}) {
   }); 
 
   return (
-    <LoadScript googleMapsApiKey="AIzaSyDe_-D5V_ilS9ejhdFVuM6WQPdCmQexZzw">
+    <LoadScript googleMapsApiKey="">
       <GoogleMap
         id="direction-example"
         mapContainerStyle={{
