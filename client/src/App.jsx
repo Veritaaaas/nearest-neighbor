@@ -36,10 +36,11 @@ const App = () => {
   
     for (let i = 0; i < matrix.length; i++) {
       for (let j = 0; j < matrix[i].length; j++) {
-        score_matrix[i][j] = (0.2 * matrix[i][j]) + (0.7 * (1/weights[j] * 10));
+        score_matrix[i][j] = (0.5 * matrix[i][j]) + (0.5 * (1/weights[j] * 100));
       }
     }
   
+    console.log('Score matrix:', score_matrix);
     return score_matrix;
   }
 
